@@ -1,5 +1,12 @@
 package io.luna.net.rsa;
 
+import javafx.application.Application;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * The main class that will launch the terminal.
  *
@@ -11,23 +18,45 @@ public final class RSAKeyGenMain {
      * The main method, the point of initialization.
      */
     public static void main(String[] args) {
-        System.out.println("RSAKeyGen v1.0");
-        System.out.println("Type (y) to generate new keys.");
-        System.out.println("Keep in mind that doing this will overwrite existing keys.");
+        doKeys();
+    }
 
-        TerminalReader terminal = new TerminalReader();
-        terminal.awaitNextInputMatching("y", new RSAKeyGen());
+    /**
+     * Attempts to generate and publish new RSA keys.
+     */
+    private static void doKeys() {
+        Path privateFile = Paths.get("rsapriv.toml");
+        Path publicFile = Paths.get("rsapub.toml");
+
+        try {
+            RSAKeyPair keyPair = RSAKeyPair.newKeyPair();
+            keyPair.writeToFile(privateFile, publicFile);
+        } catch (Exception e) {
+            exit(e);
+            return;
+        }
+        exit();
     }
 
     /**
      * Causes the application to gracefully exit.
      */
-    static void exit() {
-        System.out.println("The application will now exit.");
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException ignored) {
+    private static void exit() {
+        exit(null);
+    }
+
+    /**
+     * Causes the application to exit because of an error.
+     *
+     * @param e The error that caused the exit.
+     */
+    private static void exit(Exception e) {
+        if (e == null) {
+            Application.launch(AlertWindow.class);
+        } else {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            Application.launch(AlertWindow.class, sw.toString());
         }
-        System.exit(0);
     }
 }

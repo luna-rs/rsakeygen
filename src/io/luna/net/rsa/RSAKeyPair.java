@@ -75,8 +75,6 @@ final class RSAKeyPair {
         byte[] publicBytes = getBytes(publicKey.getModulus(), publicKey.getPublicExponent());
         Files.write(privateFile, privateBytes);
         Files.write(publicFile, publicBytes);
-
-        System.out.println("RSA private and public keys successfully generated.");
     }
 
     /**
