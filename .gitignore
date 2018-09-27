@@ -4,3 +4,4 @@ rsakeygen.iml
 /rsapriv.toml
 /rsapub.toml
 /log.err
+/src/META-INF/
